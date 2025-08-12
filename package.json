@@ -6,7 +6,7 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "deploy": "git add . && git commit -m \"deploy: $(date '+%Y-%m-%d %H:%M:%S')\" && git push origin main"
+    "deploy": "git add . && git commit -m \"auto: update App.jsx\" && git push origin main"
   },
   "dependencies": {
     "react": "^18.2.0",

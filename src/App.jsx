@@ -11,21 +11,17 @@ function App() {
         .catch((err) => console.error("Error fetching data:", err));
     };
 
-    // Fetch pertama
-    fetchData();
-
-    // Polling setiap 5 detik
-    const interval = setInterval(fetchData, 5000);
-
-    // Cleanup interval saat komponen unmount
+    fetchData(); // Fetch awal
+    const interval = setInterval(fetchData, 5000); // Fetch tiap 5 detik
     return () => clearInterval(interval);
   }, []);
 
   if (!data) return <p>Loading...</p>;
 
   return (
-    <div>
-      <h1>Dashboard</h1>
+    <div style={{ padding: "20px" }}>
+      <h1>Dashboard Magang</h1>
+      <h3>Ringkasan</h3>
       <pre>{JSON.stringify(data.summary, null, 2)}</pre>
     </div>
   );
