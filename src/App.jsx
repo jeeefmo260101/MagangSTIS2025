@@ -1,35 +1,33 @@
-import { useState, useEffect } from "react";
-import "./App.css"; // kalau mau styling tambahan
+import { useEffect, useState } from "react";
 
 export default function App() {
-  const [data, setData] = useState([]);
-  const [lastUpdate, setLastUpdate] = useState(null);
-  const [showNotif, setShowNotif] = useState(false);
+  const [data, setData] = useState(null);
 
-  // URL JSON Google Sheet (pastikan publik)
-  const SHEET_URL =
-    "https://docs.google.com/spreadsheets/d/1Z3Cx8hJdhY7CEd_xT7kSCXZu1MbwsqJGigGRMuPRuvw/gviz/tq?tqx=out:json";
-
-  const fetchData = async () => {
-    try {
-      const res = await fetch(SHEET_URL + "&cacheBuster=" + Date.now()); // cegah cache
-      const text = await res.text();
-
-      // Parsing format JSON dari Google Sheet
-      const json = JSON.parse(text.substr(47).slice(0, -2));
-      const headers = json.table.cols.map((col) => col.label);
-      const rows = json.table.rows.map((row) =>
-        row.c.map((cell) => (cell ? cell.v : ""))
-      );
-
-      setData([headers, ...rows]);
-      setLastUpdate(new Date());
-      triggerNotif();
-    } catch (err) {
-      console.error("Gagal ambil data:", err);
-    }
+  const fetchData = () => {
+    fetch("https://script.google.com/macros/s/AKfycbxIZeNMeD4-603yM_HnvcSRyx9ZExQ1egSGIxZWSBC0zlX6m1KS31R5NL7WE1jMRbN9gQ/exec")
+      .then(res => res.json())
+      .then(json => setData(json))
+      .catch(err => console.error(err));
   };
 
-  const triggerNotif = () => {
-  alert("Notifikasi berhasil dipicu!");
-};
+  useEffect(() => {
+    fetchData(); // load pertama
+    const interval = setInterval(fetchData, 5000); // update setiap 5 detik
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <div>
+      {data ? (
+        <>
+          <h1>Jumlah Peserta: {data.summary.jumlahPeserta}</h1>
+          <h2>Tugas Selesai: {data.summary.tugasSelesai}</h2>
+          <h2>Tugas Berjalan: {data.summary.tugasBerjalan}</h2>
+          <h2>Pendamping: {data.summary.jumlahPendamping}</h2>
+        </>
+      ) : (
+        <p>Loading...</p>
+      )}
+    </div>
+  );
+}
