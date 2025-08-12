@@ -30,4 +30,6 @@ export default function App() {
     }
   };
 
-  const triggerNotif =
+  const triggerNotif = () => {
+  alert("Notifikasi berhasil dipicu!");
+};
